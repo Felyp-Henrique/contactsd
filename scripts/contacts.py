@@ -13,7 +13,7 @@ def contacts():
 
 
 @contacts.command("configure")
-def contacts_build():
+def contacts_configure():
     cmd = "go get".split()
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     __print(proc)
