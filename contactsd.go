@@ -3,12 +3,13 @@ package main
 import (
 	"contactsd/internal"
 	"contactsd/pkg"
+	"context"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
-	injection := internal.GetInjection()
+	injection := internal.GetInjection("contacts", context.TODO())
 	/* load repositories */
 	repositoryContacts := injection.ContactRepository
 	/* configure application/routers */

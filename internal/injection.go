@@ -4,6 +4,8 @@
 package internal
 
 import (
+	c "context"
+
 	"github.com/google/wire"
 )
 
@@ -19,7 +21,11 @@ func NewInjection(datasource MongoDataSource, repository ContactRepository) Inje
 	}
 }
 
-func GetInjection() Injection {
-	wire.Build(NewInjection, NewMongoDataSource, NewContactRepositoryMongo)
+func GetInjection(database string, context c.Context) Injection {
+	wire.Build(
+		NewInjection,
+		NewMongoDataSource,
+		NewContactRepositoryMongo,
+	)
 	return Injection{}
 }

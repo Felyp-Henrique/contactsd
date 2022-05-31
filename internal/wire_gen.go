@@ -6,10 +6,14 @@
 
 package internal
 
+import (
+	"context"
+)
+
 // Injectors from injection.go:
 
-func GetInjection() Injection {
-	mongoDataSource := NewMongoDataSource()
+func GetInjection(database string, context2 context.Context) Injection {
+	mongoDataSource := NewMongoDataSource(database, context2)
 	contactRepository := NewContactRepositoryMongo(mongoDataSource)
 	injection := NewInjection(mongoDataSource, contactRepository)
 	return injection
