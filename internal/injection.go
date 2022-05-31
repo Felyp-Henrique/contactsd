@@ -1,41 +1,25 @@
+//go:build wireinject
+// +build wireinject
+
 package internal
 
 import (
-	"contactsd/pkg"
-	"context"
-
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/google/wire"
 )
 
-func InjectConfigurations(injection *pkg.Injection) {
-	injection.Put("database", "contacts")
-	injection.Put("collection", "contacts")
-	injection.Put("context", context.TODO())
+type Injection struct {
+	DataSource        MongoDataSource
+	ContactRepository ContactRepository
 }
 
-func InjectionExternal(injection *pkg.Injection) {
-	injection.Put("client", func() *mongo.Client {
-		options := options.Client().ApplyURI("mongodb://localhost:27017")
-		client, err := mongo.Connect(injection.Get("context").(context.Context), options)
-		if err != nil {
-			panic(err)
-		}
-		return client
-	})
+func NewInjection(datasource MongoDataSource, repository ContactRepository) Injection {
+	return Injection{
+		DataSource:        datasource,
+		ContactRepository: repository,
+	}
 }
 
-func InjectDataSources(injection *pkg.Injection) {
-	injection.Put("datasource", &MongoDataSource{
-		database:   injection.Get("database").(string),
-		collection: injection.Get("collection").(string),
-		context:    injection.Get("context").(*context.Context),
-		client:     injection.Get("client").(func() *mongo.Client)(),
-	})
-}
-
-func InjectRepositories(injection *pkg.Injection) {
-	injection.Put("repository", &ContactRepository{
-		datasource: injection.Get("datasource").(*MongoDataSource),
-	})
+func GetInjection() Injection {
+	wire.Build(NewInjection, NewMongoDataSource, NewContactRepositoryMongo)
+	return Injection{}
 }

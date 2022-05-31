@@ -3,66 +3,65 @@ package internal
 import (
 	"context"
 
-	"github.com/facebookgo/inject"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type MongoDataSource struct {
-	database   string
-	collection string
-	client     *mongo.Client
-	context    *context.Context
+	Database   string
+	Collection string
+	Client     *mongo.Client
+	Context    *context.Context
 }
 
-func (m *MongoDataSource) GetAll() []ContactModel {
-	m.client.Connect(*m.context)
-	defer m.client.Disconnect(*m.context)
-	collection := m.client.Database(m.database).Collection(m.collection)
-	cursor, err := collection.Find(*m.context, bson.D{})
+func NewMongoDataSource() MongoDataSource {
+	return MongoDataSource{}
+}
+
+func (m MongoDataSource) GetAll() []Contact {
+	m.Client.Connect(*m.Context)
+	defer m.Client.Disconnect(*m.Context)
+	collection := m.Client.Database(m.Database).Collection(m.Collection)
+	cursor, err := collection.Find(*m.Context, bson.D{})
 	if err != nil {
 		println(err)
-		return []ContactModel{}
+		return []Contact{}
 	}
-	results := []ContactModel{}
-	result := ContactModel{}
-	for cursor.Next(*m.context) {
+	results := []Contact{}
+	result := Contact{}
+	for cursor.Next(*m.Context) {
 		cursor.Decode(&result)
 		results = append(results, result)
 	}
 	return results
 }
 
-func (m *MongoDataSource) GetById(id string) ContactModel {
-	m.client.Connect(*m.context)
-	defer m.client.Disconnect(*m.context)
-	result := ContactModel{}
-	collection := m.client.Database(m.database).Collection(m.collection)
-	if err := collection.FindOne(*m.context, bson.M{"id": id}).Decode(&result); err != nil {
+func (m MongoDataSource) GetById(id string) Contact {
+	m.Client.Connect(*m.Context)
+	defer m.Client.Disconnect(*m.Context)
+	result := Contact{}
+	collection := m.Client.Database(m.Database).Collection(m.Collection)
+	if err := collection.FindOne(*m.Context, bson.M{"id": id}).Decode(&result); err != nil {
 		println(err)
-		return ContactModel{}
+		return Contact{}
 	}
 	return result
 }
 
-func (m *MongoDataSource) Insert(contact ContactModel) {
-	m.client.Connect(*m.context)
-	defer m.client.Disconnect(*m.context)
-	collection := m.client.Database(m.database).Collection(m.collection)
-	if _, err := collection.InsertOne(*m.context, &contact); err != nil {
+func (m MongoDataSource) Insert(contact Contact) {
+	m.Client.Connect(*m.Context)
+	defer m.Client.Disconnect(*m.Context)
+	collection := m.Client.Database(m.Database).Collection(m.Collection)
+	if _, err := collection.InsertOne(*m.Context, &contact); err != nil {
 		println(err)
 	}
 }
 
-func (m *MongoDataSource) Update(contact ContactModel) {
-	m.client.Connect(*m.context)
-	defer m.client.Disconnect(*m.context)
-	collection := m.client.Database(m.database).Collection(m.collection)
-	if _, err := collection.UpdateOne(*m.context, bson.M{"id": contact.GetId()}, *&contact); err != nil {
+func (m MongoDataSource) Update(contact Contact) {
+	m.Client.Connect(*m.Context)
+	defer m.Client.Disconnect(*m.Context)
+	collection := m.Client.Database(m.Database).Collection(m.Collection)
+	if _, err := collection.UpdateOne(*m.Context, bson.M{"id": contact.Id}, *&contact); err != nil {
 		println(err)
 	}
-}
-
-func Init(dependencies *inject.Graph) error {
-	return dependencies.Provide()
 }

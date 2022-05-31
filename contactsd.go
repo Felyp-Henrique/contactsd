@@ -8,27 +8,22 @@ import (
 )
 
 func main() {
-	/* configure dependency injection */
-	injection := &pkg.Injection{}
-	internal.InjectConfigurations(injection)
-	internal.InjectionExternal(injection)
-	internal.InjectDataSources(injection)
-	internal.InjectRepositories(injection)
+	injection := internal.GetInjection()
 	/* load repositories */
-	repository := injection.Get("repository").(*internal.ContactRepository)
+	repositoryContacts := injection.ContactRepository
 	/* configure application/routers */
 	app := fiber.New(fiber.Config{
 		Prefork: true,
 	})
 	defer app.Listen(":3000")
 	app.Get("/", func(c *fiber.Ctx) error {
-		results := repository.GetAll()
+		results := repositoryContacts.GetAll()
 		response := pkg.NewResponseOk(results)
 		return c.JSON(response)
 	})
 	app.Get("/:id", func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		result := repository.GetById(id)
+		result := repositoryContacts.GetById(id)
 		response := pkg.NewResponseOk(result)
 		return c.JSON(response)
 	})
