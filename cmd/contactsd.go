@@ -2,6 +2,7 @@ package main
 
 import (
 	"contactsd/internal"
+	"contactsd/pkg"
 	"context"
 
 	"github.com/gofiber/fiber/v2"
@@ -9,8 +10,8 @@ import (
 
 func main() {
 	/* base configuration */
-	database := internal.NewMongoDatabase("contacts", context.TODO())
-	datasource := internal.NewMongoDataSource(database)
+	database := pkg.NewMongoDatabase("contacts", context.TODO())
+	datasource := pkg.NewMongoDataSource(database)
 	repositoryContacts := internal.NewContactsRepositoryMongo(datasource)
 	controllerContacts := internal.NewContactsController(&repositoryContacts)
 	/* controllers and routers */
