@@ -7,10 +7,10 @@ import (
 )
 
 type ContactsController struct {
-	RepositoryContacts *ContactRepository
+	RepositoryContacts *ContactsRepository
 }
 
-func NewContactsController(repository *ContactRepository) *ContactsController {
+func NewContactsController(repository *ContactsRepository) *ContactsController {
 	return &ContactsController{
 		RepositoryContacts: repository,
 	}

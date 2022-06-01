@@ -6,29 +6,29 @@ import (
 	"github.com/google/uuid"
 )
 
-type ContactRepository struct {
+type ContactsRepository struct {
 	Datasource pkg.IDataSource[string, Contact]
 }
 
-func NewContactRepositoryMongo(datasource pkg.IDataSource[string, Contact]) ContactRepository {
-	return ContactRepository{
+func NewContactsRepositoryMongo(datasource pkg.IDataSource[string, Contact]) ContactsRepository {
+	return ContactsRepository{
 		Datasource: datasource,
 	}
 }
 
-func (c *ContactRepository) GetAll() []Contact {
+func (c *ContactsRepository) GetAll() []Contact {
 	return c.Datasource.GetAll("contacts")
 }
 
-func (c *ContactRepository) GetById(id string) Contact {
+func (c *ContactsRepository) GetById(id string) Contact {
 	return c.Datasource.GetById("contacts", id)
 }
 
-func (c *ContactRepository) Insert(contact Contact) {
+func (c *ContactsRepository) Insert(contact Contact) {
 	contact.Id = uuid.NewString()
 	c.Datasource.Insert("contacts", contact)
 }
 
-func (c *ContactRepository) Update(contact Contact) {
+func (c *ContactsRepository) Update(contact Contact) {
 	c.Datasource.Update("contacts", contact)
 }

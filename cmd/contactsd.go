@@ -11,11 +11,11 @@ func main() {
 	/* base configuration */
 	database := internal.NewMongoDatabase("contacts", context.TODO())
 	datasource := internal.NewMongoDataSource(database)
-	repositoryContacts := internal.NewContactRepositoryMongo(datasource)
+	repositoryContacts := internal.NewContactsRepositoryMongo(datasource)
 	controllerContacts := internal.NewContactsController(&repositoryContacts)
 	/* controllers and routers */
 	server := fiber.New(fiber.Config{
-		Prefork: false,
+		Prefork: true,
 	})
 	defer server.Listen(":3000")
 	v1 := server.Group("/v1")
