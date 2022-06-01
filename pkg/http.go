@@ -1,9 +1,9 @@
 package pkg
 
 type Response[D any] struct {
-	Status int
-	Data   D
-	Erros  []string
+	Status int      `json:"status"`
+	Data   D        `json:"data"`
+	Erros  []string `json:"erros"`
 }
 
 func NewResponseOk[D any](data D) *Response[D] {

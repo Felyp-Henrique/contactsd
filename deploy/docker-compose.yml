@@ -1,4 +1,10 @@
 version: "3.9"
 services:
   database:
-  daemon:
+    image: mongo
+    restart: always
+    container_name: contacts_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db

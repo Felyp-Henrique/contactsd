@@ -10,25 +10,25 @@ type ContactRepository struct {
 	Datasource pkg.IDataSource[string, Contact]
 }
 
-func NewContactRepositoryMongo(datasource MongoDataSource) ContactRepository {
+func NewContactRepositoryMongo(datasource pkg.IDataSource[string, Contact]) ContactRepository {
 	return ContactRepository{
 		Datasource: datasource,
 	}
 }
 
 func (c *ContactRepository) GetAll() []Contact {
-	return c.GetAll()
+	return c.Datasource.GetAll("contacts")
 }
 
 func (c *ContactRepository) GetById(id string) Contact {
-	return c.GetById(id)
+	return c.Datasource.GetById("contacts", id)
 }
 
 func (c *ContactRepository) Insert(contact Contact) {
 	contact.Id = uuid.NewString()
-	c.Insert(contact)
+	c.Datasource.Insert("contacts", contact)
 }
 
 func (c *ContactRepository) Update(contact Contact) {
-	c.Update(contact)
+	c.Datasource.Update("contacts", contact)
 }
