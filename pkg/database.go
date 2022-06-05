@@ -7,38 +7,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type IDatabase[D any] interface {
-	Connect() (D, error)
-	Disconnect(D) error
-}
-
-type MongoDatabase struct {
-	Database string
-	Username string
-	Password string
-	Context  context.Context
-}
-
-func NewMongoDatabase(database string, context context.Context) MongoDatabase {
-	return MongoDatabase{
-		Database: database,
-		Context:  context,
+func NewMongo(context context.Context, database string) (*mongo.Database, error) {
+	option := options.Client().ApplyURI("mongodb://localhost:27017")
+	if client, err := mongo.Connect(context, option); err != nil {
+		return nil, err
+	} else {
+		return client.Database(database), ErrorDatabaseConnectionUnavailable
 	}
-}
-
-func (m MongoDatabase) Connect() (*mongo.Client, error) {
-	auth := options.Credential{
-		Username:   m.Username,
-		Password:   m.Password,
-		AuthSource: "admin",
-	}
-	options := options.
-		Client().
-		ApplyURI("mongodb://localhost:27017").
-		SetAuth(auth)
-	return mongo.Connect(m.Context, options)
-}
-
-func (m MongoDatabase) Disconnect(driver *mongo.Client) error {
-	return driver.Disconnect(m.Context)
 }

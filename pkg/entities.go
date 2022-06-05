@@ -1,4 +1,4 @@
-package internal
+package pkg
 
 type Contact struct {
 	Id        string `bson:"id" json:"id"`

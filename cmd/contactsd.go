@@ -2,18 +2,13 @@ package main
 
 import (
 	"contactsd/internal"
-	"contactsd/pkg"
-	"context"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
 	/* base configuration */
-	database := pkg.NewMongoDatabase("contacts", context.TODO())
-	datasource := pkg.NewMongoDataSource(database)
-	repositoryContacts := internal.NewContactsRepositoryMongo(datasource)
-	controllerContacts := internal.NewContactsController(&repositoryContacts)
+	controllerContacts := internal.NewContactsController()
 	/* controllers and routers */
 	server := fiber.New(fiber.Config{
 		Prefork: true,

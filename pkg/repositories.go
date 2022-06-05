@@ -1,8 +1,8 @@
 package pkg
 
 type IContactRepository[I any, M any] interface {
-	GetAll() []M
-	GetById(id I) M
-	Insert(contact M)
-	Update(contact M)
+	GetAll() ([]M, error)
+	GetById(id I) (M, error)
+	Insert(contact M) error
+	Update(contact M) error
 }

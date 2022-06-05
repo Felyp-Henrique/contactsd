@@ -2,32 +2,30 @@ package internal
 
 import (
 	"contactsd/pkg"
-
-	"github.com/google/uuid"
 )
 
 type ContactsRepository struct {
-	Datasource pkg.MongoDataSource
+	Datasource ContactsMongoDataSource
 }
 
-func NewContactsRepositoryMongo(datasource pkg.MongoDataSource) ContactsRepository {
+func NewContactsRepositoryMongo(datasource ContactsMongoDataSource) ContactsRepository {
 	return ContactsRepository{
 		Datasource: datasource,
 	}
 }
 
-func (c *ContactsRepository) GetAll() []Contact {
-	return []Contact{}
+func (c *ContactsRepository) GetAll() ([]pkg.Contact, error) {
+	return c.Datasource.GetAll()
 }
 
-func (c *ContactsRepository) GetById(id string) Contact {
-	return Contact{}
+func (c *ContactsRepository) GetById(id string) (pkg.Contact, error) {
+	return c.Datasource.GetById(id)
 }
 
-func (c *ContactsRepository) Insert(contact Contact) {
-	contact.Id = uuid.NewString()
+func (c *ContactsRepository) Insert(contact pkg.Contact) error {
+	return c.Datasource.Insert(contact)
 }
 
-func (c *ContactsRepository) Update(contact Contact) {
-
+func (c *ContactsRepository) Update(contact pkg.Contact) error {
+	return c.Datasource.Update(contact)
 }
