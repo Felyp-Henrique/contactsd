@@ -35,26 +35,28 @@ func (c *ContactsMongoDataSource) GetAll() ([]pkg.Contact, error) {
 	return contacts, nil
 }
 
-func (c *ContactsMongoDataSource) GetById(id string) (pkg.Contact, error) {
+func (c *ContactsMongoDataSource) GetById(id string) (*pkg.Contact, error) {
 	query := c.Database.Collection("contacts")
 	contact := pkg.Contact{}
 	if cursor, err := query.Find(c.Context, bson.M{"id": id}); err == nil {
 		if cursor.Next(c.Context) {
 			cursor.Decode(&contact)
+		} else {
+			return nil, pkg.ErrorContactsNotFound
 		}
 	} else {
-		return contact, pkg.ErrorContactsNotFound
+		return nil, pkg.ErrorContactsNotFound
 	}
-	return contact, nil
+	return &contact, nil
 }
 
-func (c *ContactsMongoDataSource) Insert(contact pkg.Contact) error {
+func (c *ContactsMongoDataSource) Insert(contact pkg.Contact) (*pkg.Contact, error) {
 	contact.Id = uuid.NewString()
 	query := c.Database.Collection("contacts")
 	if _, err := query.InsertOne(c.Context, &contact); err != nil {
-		return pkg.ErrorContactsInsert
+		return nil, pkg.ErrorContactsInsert
 	}
-	return nil
+	return c.GetById(contact.Id)
 }
 
 func (c *ContactsMongoDataSource) Update(contact pkg.Contact) error {

@@ -2,9 +2,12 @@ version: "3.9"
 services:
   database:
     image: mongo
-    restart: always
+    restart: on-failure
     container_name: contacts_mongo
     ports:
       - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=toor
     volumes:
       - ./data:/data/db

@@ -8,10 +8,17 @@ import (
 )
 
 func NewMongo(context context.Context, database string) (*mongo.Database, error) {
-	option := options.Client().ApplyURI("mongodb://localhost:27017")
+	credential := options.Credential{
+		Username: "root",
+		Password: "toor",
+	}
+	option := options.
+		Client().
+		ApplyURI("mongodb://localhost:27017").
+		SetAuth(credential)
 	if client, err := mongo.Connect(context, option); err != nil {
-		return nil, err
+		return nil, ErrorDatabaseConnectionUnavailable
 	} else {
-		return client.Database(database), ErrorDatabaseConnectionUnavailable
+		return client.Database(database), nil
 	}
 }

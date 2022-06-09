@@ -11,7 +11,7 @@ func main() {
 	controllerContacts := internal.NewContactsController()
 	/* routers */
 	configuration := fiber.Config{
-		Prefork: true,
+		Prefork: false,
 	}
 	server := fiber.New(configuration)
 	defer server.Listen(":3000")
