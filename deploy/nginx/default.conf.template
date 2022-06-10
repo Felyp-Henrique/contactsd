@@ -1,8 +1,0 @@
-server {
-    listen ${NGINX_PORT};
-    server_name contacts.felyp.io;
-
-    location / {
-        proxy_pass http://localhost:3000/;
-    }
-}
